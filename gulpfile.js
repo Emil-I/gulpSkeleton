@@ -3,7 +3,7 @@
 const gulp = require('gulp');
 
 
-gulp.task('hello', function(callback) {
-  console.log('hello');
-  callback();
+gulp.task('default', function() {
+  return gulp.src('app/src/*.html')
+    .pipe(gulp.dest('dist'));
 })
