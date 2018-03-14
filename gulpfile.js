@@ -2,7 +2,10 @@
 
 const gulp = require('gulp');
 const del = require('del');
-// const sourcemaps = require('gulp-sourcemaps');
+const gulpIf = require('gulp-if');
+const sourcemaps = require('gulp-sourcemaps');
+
+const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV == 'development';
 
 
 gulp.task('clean', function() {
