@@ -8,11 +8,13 @@ const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const newer = require('gulp-newer');
 const debug = require('gulp-debug');
+const notify = require('gulp-notify');
+const browserSync = require('browser-sync').create();
 
 const dist = {
   root: 'app/dist',
   fonts: 'app/src/fonts/**',
-  styles: 'app/src/styles/main.*',
+  styles: 'app/src/styles/*.*',
   html: 'app/src/*.html',
   img: 'app/src/img/**'
 };
@@ -39,7 +41,15 @@ gulp.task('build:css', function() {
   return gulp.src(dist.styles, {
       base: base.root
     })
+    .pipe(gulpIf(isDevelopment, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
+    .on('error', notify.onError(function(err) {
+      return {
+        title: 'sass',
+        message: err.message
+      }
+    }))
+    .pipe(gulpIf(isDevelopment, sourcemaps.write()))
     .pipe(autoprefixer({
       browsers: 'last 3 version',
       cascade: false
@@ -73,6 +83,24 @@ gulp.task('copy:fonts', function() {
     .pipe(gulp.dest(dist.root));
 });
 
+// serve
+gulp.task('serve', function() {
+  browserSync.init({
+    server: dist.root
+  });
+  browserSync.watch('app/dist/**/*.*').on('change', browserSync.reload);
+});
+
+
+// WATCHERS
+gulp.task('watch', function() {
+  gulp.watch(dist.html, gulp.series('html'));
+  gulp.watch(dist.fonts, gulp.series('copy:fonts'));
+  gulp.watch(dist.img, gulp.series('copy:image'));
+  gulp.watch(dist.styles, gulp.series('build:css'));
+});
+
+
 /*
    RUN BUILD
 */
@@ -80,19 +108,11 @@ gulp.task('default',
   gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css')));
 
 
-
-// WATCHERS
-gulp.task('watch', function() {
-  gulp.watch(dist.styles, gulp.series('build:css'));
-  gulp.watch(dist.fonts, gulp.series('copy:fonts'));
-  gulp.watch(dist.img, gulp.series('copy:image'));
-});
-
-
 /*
 RUN BUILD DEV
 */
-gulp.task('dev', gulp.series('default', 'watch'));
+gulp.task('dev',
+  gulp.series('default', gulp.parallel('watch', 'serve')));
 
 
 /*
