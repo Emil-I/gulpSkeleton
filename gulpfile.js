@@ -118,7 +118,8 @@ gulp.task('dev',
 /*
 RUN BUILD PROD
 */
-gulp.task('build', gulp.series('default'));
+gulp.task('build',
+  gulp.series('default'));
 
 /*
    END
