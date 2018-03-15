@@ -6,11 +6,13 @@ const gulpIf = require('gulp-if');
 const sourcemaps = require('gulp-sourcemaps');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
+const newer = require('gulp-newer');
+const debug = require('gulp-debug');
 
 const dist = {
   root: 'app/dist',
   fonts: 'app/src/fonts/**',
-  css: 'app/src/styles/main.*',
+  styles: 'app/src/styles/main.*',
   html: 'app/src/*.html',
   img: 'app/src/img/**'
 };
@@ -34,7 +36,7 @@ gulp.task('html', function() {
 
 // build css from scss or sass
 gulp.task('build:css', function() {
-  return gulp.src(dist.css, {
+  return gulp.src(dist.styles, {
       base: base.root
     })
     .pipe(sass().on('error', sass.logError))
@@ -51,6 +53,10 @@ gulp.task('copy:image', function() {
       base: base.root,
       since: gulp.lastRun('copy:image')
     })
+    .pipe(newer(dist.root))
+    .pipe(debug({
+      title: 'copy:image'
+    }))
     .pipe(gulp.dest(dist.root));
 });
 
@@ -60,6 +66,10 @@ gulp.task('copy:fonts', function() {
       base: base.root,
       since: gulp.lastRun('copy:fonts')
     })
+    .pipe(newer(dist.root))
+    .pipe(debug({
+      title: 'copy:fonts'
+    }))
     .pipe(gulp.dest(dist.root));
 });
 
@@ -73,7 +83,7 @@ gulp.task('default',
 
 // WATCHERS
 gulp.task('watch', function() {
-  gulp.watch(dist.css, gulp.series('build:css'));
+  gulp.watch(dist.styles, gulp.series('build:css'));
   gulp.watch(dist.fonts, gulp.series('copy:fonts'));
   gulp.watch(dist.img, gulp.series('copy:image'));
 });
