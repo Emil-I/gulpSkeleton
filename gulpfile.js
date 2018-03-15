@@ -21,15 +21,15 @@ gulp.task('clean', function() {
   return del(dist.root);
 });
 
-gulp.task('default', function() {
+
+gulp.task('html', function() {
   return gulp.src('app/src/*.html')
     .pipe(gulp.dest(dist.root));
 });
 
-// TODO Не работает нормально
-// НЕ запускаю пока
+
 gulp.task('build:css', function() {
-  gulp.src('app/src/styles/*.*', {
+  return gulp.src('app/src/styles/main.*', {
       base: base.root
     })
     .pipe(sass().on('error', sass.logError))
@@ -37,7 +37,7 @@ gulp.task('build:css', function() {
       browsers: 'last 3 version',
       cascade: false
     }))
-    .pipe(gulp.dest(dist.root))
+    .pipe(gulp.dest(dist.root));
 });
 
 
@@ -45,15 +45,20 @@ gulp.task('copy:image', function() {
   return gulp.src('app/src/img/**', {
       base: base.root
     })
-    .pipe(gulp.dest(dist.root))
+    .pipe(gulp.dest(dist.root));
 });
 
 gulp.task('copy:fonts', function() {
   return gulp.src('app/src/fonts/**', {
       base: base.root
     })
-    .pipe(gulp.dest(dist.root))
+    .pipe(gulp.dest(dist.root));
 });
 
 
-gulp.task('build', gulp.series('clean', gulp.parallel('default', 'copy:image', 'copy:fonts')));
+gulp.task('build',
+  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css')));
+
+/*
+END
+*/
