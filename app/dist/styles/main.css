@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: silver; }
+
+.main.active {
+  color: blue;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-transform: rotate(150deg);
+  -ms-transform: rotate(150deg);
+  transform: rotate(150deg); }
