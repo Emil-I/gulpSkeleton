@@ -156,24 +156,24 @@ gulp.task('watch', function() {
 
 
 /*
-   RUN BUILD
+   RUN BUILD DEV
 */
-gulp.task('default',
+gulp.task('build:all',
   gulp.series('clean', 'move', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script', 'move:lib')));
 
 
 /*
-RUN BUILD DEV
+RUN BUILD WATCH SERVE
 */
-gulp.task('dev',
-  gulp.series('default', gulp.parallel('watch', 'serve')));
+gulp.task('default',
+  gulp.series('build:all', gulp.parallel('watch', 'serve')));
 
 
 /*
 RUN BUILD PROD
 */
 gulp.task('build',
-  gulp.series('default'));
+  gulp.series('build:all'));
 
 /*
    END

@@ -9,5 +9,8 @@ What you need:
 npm install
 ```
 
-<!-- Then make `gulp move` task
-and finishly you can start `gulp` -->
+Start `gulp` {run: build, watch and browser sync}
+
+or
+
+Start `NODE_ENV=production gulp build` {run: build}
