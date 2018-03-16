@@ -19,7 +19,8 @@ const dist = {
   styles: 'app/src/styles/*.*',
   html: 'app/src/*.html',
   img: 'app/src/img/**',
-  script: 'app/src/js/**/*.js'
+  script: 'app/src/js/**/*.js',
+  lib: 'app/src/lib/**'
 };
 
 const base = {
@@ -100,6 +101,19 @@ gulp.task('build:script', function() {
     .pipe(gulp.dest(dist.root));
 });
 
+// move lib
+gulp.task('move:lib', function() {
+  return gulp.src(dist.lib, {
+      base: base.root,
+      since: gulp.lastRun('move:lib')
+    })
+    .pipe(newer(dist.root))
+    .pipe(debug({
+      title: 'move:lib'
+    }))
+    .pipe(gulp.dest(dist.root));
+});
+
 // serve
 gulp.task('serve', function() {
   browserSync.init({
@@ -123,7 +137,7 @@ gulp.task('watch', function() {
    RUN BUILD
 */
 gulp.task('default',
-  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script')));
+  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script', 'move:lib')));
 
 
 /*
