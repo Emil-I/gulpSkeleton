@@ -114,6 +114,28 @@ gulp.task('move:lib', function() {
     .pipe(gulp.dest(dist.root));
 });
 
+
+
+
+// move bootstrap
+gulp.task('move:bootstrap', function() {
+  return gulp.src('node_modules/bootstrap/dist/**/*')
+    .pipe(gulp.dest('app/dist/lib/bootstrap'))
+});
+
+// move jquery
+gulp.task('move:jquery', function() {
+  return gulp.src('node_modules/jquery/dist/jquery.min.js')
+    .pipe(gulp.dest('app/dist/lib/jquery'))
+});
+
+gulp.task('move',
+  gulp.series('move:bootstrap', 'move:jquery'));
+
+
+
+
+
 // serve
 gulp.task('serve', function() {
   browserSync.init({
@@ -137,7 +159,7 @@ gulp.task('watch', function() {
    RUN BUILD
 */
 gulp.task('default',
-  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script', 'move:lib')));
+  gulp.series('clean', 'move', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script', 'move:lib')));
 
 
 /*
