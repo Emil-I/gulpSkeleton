@@ -1,5 +1,10 @@
-'use strcit';
+"use strict";
 
 const hello = 'hello';
 
-console.log(`${hello} world`);
+
+let log = () => {
+  console.log(`${hello} gulp`);
+}
+
+log();

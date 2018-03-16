@@ -1,22 +1,25 @@
 'use strict';
 
-const gulp = require('gulp');
 const del = require('del');
-const gulpIf = require('gulp-if');
-const sourcemaps = require('gulp-sourcemaps');
+const gulp = require('gulp');
 const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
+const gulpIf = require('gulp-if');
 const newer = require('gulp-newer');
 const debug = require('gulp-debug');
 const notify = require('gulp-notify');
+const babel = require('gulp-babel');
+const concat = require('gulp-concat');
+const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
+const autoprefixer = require('gulp-autoprefixer');
 
 const dist = {
   root: 'app/dist',
   fonts: 'app/src/fonts/**',
   styles: 'app/src/styles/*.*',
   html: 'app/src/*.html',
-  img: 'app/src/img/**'
+  img: 'app/src/img/**',
+  script: 'app/src/js/**/*.js'
 };
 
 const base = {
@@ -83,6 +86,20 @@ gulp.task('copy:fonts', function() {
     .pipe(gulp.dest(dist.root));
 });
 
+// scripts
+gulp.task('build:script', function() {
+  return gulp.src(dist.script, {
+      base: base.root
+    })
+    .pipe(gulpIf(isDevelopment, sourcemaps.init()))
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
+    .pipe(concat('js/main.js'))
+    .pipe(gulpIf(isDevelopment, sourcemaps.write()))
+    .pipe(gulp.dest(dist.root));
+});
+
 // serve
 gulp.task('serve', function() {
   browserSync.init({
@@ -98,6 +115,7 @@ gulp.task('watch', function() {
   gulp.watch(dist.fonts, gulp.series('copy:fonts'));
   gulp.watch(dist.img, gulp.series('copy:image'));
   gulp.watch(dist.styles, gulp.series('build:css'));
+  gulp.watch(dist.script, gulp.series('build:script'));
 });
 
 
@@ -105,7 +123,7 @@ gulp.task('watch', function() {
    RUN BUILD
 */
 gulp.task('default',
-  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css')));
+  gulp.series('clean', gulp.parallel('html', 'copy:image', 'copy:fonts', 'build:css', 'build:script')));
 
 
 /*
