@@ -9,10 +9,10 @@ What you need:
 npm install
 ```
 
-# dev
+##### dev
 Start `gulp` {run: build, watch and browser sync}
 
 or
 
-# prod
+##### prod
 Start `npm run build` {minify: images, js, css}
