@@ -9,22 +9,25 @@ const debug = require('gulp-debug');
 const notify = require('gulp-notify');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
+const minify_css = require('gulp-minify-css');
+const minify_js = require('gulp-js-minify');
+const minify_image = require('gulp-image');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
 const autoprefixer = require('gulp-autoprefixer');
 
 const dist = {
-  root: 'app/dist',
-  fonts: 'app/src/fonts/**',
-  styles: 'app/src/styles/*.*',
-  html: 'app/src/*.html',
-  img: 'app/src/img/**',
-  script: 'app/src/js/**/*.js',
-  lib: 'app/src/lib/**'
+  root: 'dist',
+  fonts: 'src/fonts/**',
+  styles: 'src/styles/*.*',
+  html: 'src/*.html',
+  img: 'src/img/**',
+  script: 'src/js/**/*.js',
+  lib: 'src/lib/**'
 };
 
 const base = {
-  root: 'app/src'
+  root: 'src'
 };
 
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV == 'development';
@@ -58,6 +61,8 @@ gulp.task('build:css', function() {
       browsers: 'last 3 version',
       cascade: false
     }))
+    .pipe(concat('styles/main.css'))
+    .pipe(gulpIf(!isDevelopment, minify_css()))
     .pipe(gulp.dest(dist.root));
 });
 
@@ -71,6 +76,7 @@ gulp.task('copy:image', function() {
     .pipe(debug({
       title: 'copy:image'
     }))
+    .pipe(gulpIf(!isDevelopment, minify_image()))
     .pipe(gulp.dest(dist.root));
 });
 
@@ -98,6 +104,7 @@ gulp.task('build:script', function() {
     }))
     .pipe(concat('js/main.js'))
     .pipe(gulpIf(isDevelopment, sourcemaps.write()))
+    .pipe(gulpIf(!isDevelopment, minify_js()))
     .pipe(gulp.dest(dist.root));
 });
 
@@ -120,13 +127,13 @@ gulp.task('move:lib', function() {
 // move bootstrap
 gulp.task('move:bootstrap', function() {
   return gulp.src('node_modules/bootstrap/dist/**/*')
-    .pipe(gulp.dest('app/dist/lib/bootstrap'))
+    .pipe(gulp.dest('dist/lib/bootstrap'))
 });
 
 // move jquery
 gulp.task('move:jquery', function() {
   return gulp.src('node_modules/jquery/dist/jquery.min.js')
-    .pipe(gulp.dest('app/dist/lib/jquery'))
+    .pipe(gulp.dest('dist/lib/jquery'))
 });
 
 gulp.task('move',
@@ -141,7 +148,7 @@ gulp.task('serve', function() {
   browserSync.init({
     server: dist.root
   });
-  browserSync.watch('app/dist/**/*.*').on('change', browserSync.reload);
+  browserSync.watch('dist/**/*.*').on('change', browserSync.reload);
 });
 
 

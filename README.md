@@ -9,8 +9,10 @@ What you need:
 npm install
 ```
 
+# dev
 Start `gulp` {run: build, watch and browser sync}
 
 or
 
-Start `NODE_ENV=production gulp build` {run: build}
+# prod
+Start `npm run build` {minify: images, js, css}
