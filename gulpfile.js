@@ -19,7 +19,8 @@ const autoprefixer = require('gulp-autoprefixer');
 const dist = {
   root: 'dist',
   fonts: 'src/fonts/**',
-  styles: 'src/styles/*.*',
+  // styles: 'src/styles/*.*',
+  styles: ['src/styles/fonts.scss', 'src/styles/index.scss', 'src/styles/adaptive.scss'],
   html: 'src/*.html',
   img: 'src/img/**',
   script: 'src/js/**/*.js',
